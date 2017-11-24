@@ -19,7 +19,9 @@
             <%= title %>
         </p>
 
-        <p v-for="item in postsList"> {{ item.title }} </p>
+        <div v-for="item in postsList">
+            <a v-bind:href="item.url"> {{ item.title }} </a>
+        </div>
     </div>
 </body>
 <script>
@@ -27,17 +29,14 @@
         el: '#app',
         data: {
             postsList: []
-        },
-        methods: {
-            fetchData() {
-                axios.get('/api/posts')
-                    .then(function (response) {
-                        vm.postsList = response.data.postsList;
-                    })
-            }
         }
     });
-    vm.fetchData();
+
+    axios.get('/api/posts')
+        .then(function (response) {
+            vm.postsList = response.data.postsList;
+            vm.postsList.forEach((element) => element.url = '/posts/show?id=' + element._id);
+    });
 </script>
 
 </html>
