@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var PostModel = require('../models/post');
+var marked = require('marked');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -22,6 +23,7 @@ router.get('/posts/show', function (req, res, next) {
   var id = req.query.id;
 
   PostModel.findOne({ _id: id }, function (err, post) {
+    post.content = marked(post.content);
     res.render('show', { post });
   });
 });
