@@ -5,38 +5,44 @@
     <title>
         <%= title %>
     </title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
     <script src="https://cdn.bootcss.com/vue/2.4.4/vue.min.js"></script>
     <script src="https://cdn.bootcss.com/axios/0.16.2/axios.min.js"></script>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
 
 <body>
-    <div id="app">
-        <h1>
-            <%= title %>
-        </h1>
-        <p>Welcome to
-            <%= title %>
-        </p>
+    <div class="container" id="app">
+        <div class="col-md-8 col-md-offset-2">
+            <!-- Split button -->
+            <div class="btn-group pull-right">
+                <button type="button" class="btn btn-default">操作</button>
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="/posts/create">新建</a>
+                    </li>
+                </ul>
+            </div>
+            <h1>
+                <%= title %>
+            </h1>
+            <p>Welcome to
+                <%= title %>
+            </p>
 
-        <ul class="list-group" v-for="item in postsList">
-            <li class="list-group-item">
-                <a v-bind:href="item.url"> {{ item.title }} </a>
-            </li>
-        </ul>
-                    <!-- Split button -->
-                    <div class="btn-group pull-right">
-                            <button type="button" class="btn btn-default">操作</button>
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              <span class="caret"></span>
-                              <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <ul class="dropdown-menu">
-                              <li><a href="/posts/create">新建</a></li>
-                            </ul>
-                        </div>
+            <ul class="list-group" v-for="item in postsList">
+                <li class="list-group-item">
+                    <a v-bind:href="item.url"> {{ item.title }} </a>
+                </li>
+            </ul>
+
+        </div>
     </div>
 </body>
 <script>
@@ -51,7 +57,7 @@
         .then(function (response) {
             vm.postsList = response.data.postsList;
             vm.postsList.forEach((element) => element.url = '/posts/show?id=' + element._id);
-    });
+        });
 </script>
 
 </html>

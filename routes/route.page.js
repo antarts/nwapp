@@ -4,17 +4,17 @@ var PostModel = require('../models/post');
 var marked = require('marked');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
   res.render('index', { title: 'Index page.' });
 });
 
 /* GET posts page. */
-router.get('/posts', function(req, res, next) {
-  res.render('posts', { title: 'post page.'});
+router.get('/posts', function (req, res, next) {
+  res.render('posts', { title: 'post page.' });
 });
 
 /* GET posts edit page. */
-router.get('/posts/create', function(req, res, next) {
+router.get('/posts/create', function (req, res, next) {
   res.render('create');
 });
 
@@ -26,6 +26,13 @@ router.get('/posts/show', function (req, res, next) {
     post.content = marked(post.content);
     res.render('show', { post });
   });
+});
+
+/* GET posts edit page. */
+router.get('/posts/edit', function (req, res, next) {
+  var id = req.query.id;
+
+  res.render('edit', { id });
 });
 
 module.exports = router;
