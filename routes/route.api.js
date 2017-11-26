@@ -24,6 +24,11 @@ router.post('/posts/create', function (req, res, next) {
   var title = req.body.title;
   var content = req.body.content;
 
+  if ( title == '' || content =='') {
+    next(new Error("内容不能为空！"));
+    return;
+  }
+
   var post = new PostModel();
   post.title = title;
   post.content = content;

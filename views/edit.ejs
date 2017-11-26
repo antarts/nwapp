@@ -33,6 +33,7 @@
             submit() {
                 axios.post('/api/posts/edit',
                     {
+                        id: postId,
                         title: vm.title,
                         content: vm.content
                     })

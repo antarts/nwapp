@@ -5,7 +5,8 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var expressLayouts = require('express-ejs-layouts')
+var expressLayouts = require('express-ejs-layouts');
+var useragent = require('express-useragent');
 
 var api = require('./routes/route.api');
 var page = require('./routes/route.page');
@@ -24,6 +25,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(useragent.express());
+app.use(function (req, res, next) {
+  console.log(req.useragent);
+  next();
+});
 
 app.use('/', page);
 app.use('/api', api);
