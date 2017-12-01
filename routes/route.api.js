@@ -51,7 +51,7 @@ router.get('/posts/:id', function (req, res, next) {
       res.json({ success: false });
     } else {
       res.json({ success: true, post });
-    }
+    } 
   });
 });
 
