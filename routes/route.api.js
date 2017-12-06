@@ -26,8 +26,7 @@ router.post('/posts', function (req, res, next) {
   var content = req.body.content;
 
   if ( title == '' || content =='') {
-    next(new Error("内容不能为空！"));
-    return;
+    return next(new Error("内容不能为空！"));
   }
 
   var post = new PostModel();
