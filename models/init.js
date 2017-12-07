@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
+var config = require('../config');
 
-mongoose.connect('mongodb://localhost:32768/firstapp', {
+mongoose.connect(config.mongodbUrl, {
   useMongoClient: true
 });

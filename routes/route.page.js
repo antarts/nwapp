@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var config = require('../config');
 var PostModel = require('../models/post');
 var marked = require('marked');
 
@@ -36,13 +37,19 @@ router.get('/posts/edit', function (req, res, next) {
 });
 
 /* GET signup page. */
-router.get('/signup', function(req, res, next) {
+router.get('/signup', function (req, res, next) {
   res.render('signup');
 });
 
 /* GET signin page. */
 router.get('/signin', function (req, res, next) {
   res.render('signin');
+});
+
+/* GET signout */
+router.get('/signout', function (req, res, next) {
+  res.clearCookie(config.cookieName, { path: '/' });
+  res.redirect('/');
 });
 
 module.exports = router;

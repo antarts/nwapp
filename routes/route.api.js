@@ -23,7 +23,7 @@ router.get('/posts', function (req, res, next) {
   });
 });
 
-/* POST create posts */
+/* POST create post */
 router.post('/posts', function (req, res, next) {
   var title = req.body.title;
   var content = req.body.content;
@@ -35,6 +35,7 @@ router.post('/posts', function (req, res, next) {
   var post = new PostModel();
   post.title = title;
   post.content = content;
+  post.authorId = res.locals.currentUser._id;
   post.save(function (err, doc) {
     if (err) {
       errorHandle(err, next);
@@ -74,7 +75,7 @@ router.patch('/posts/:id', function (req, res, next) {
 });
 
 /* POST signup user */
-router.post('/signup', function (req, res, next) {
+router.post('/signup', function(req, res, next) {
   var name = req.body.name;
   var pass = req.body.pass;
   var rePass = req.body.rePass;
@@ -86,7 +87,7 @@ router.post('/signup', function (req, res, next) {
   var user = new UserModel();
   user.name = name;
   user.pass = bcrypt.hashSync(pass, 10);
-  user.save(function (err) {
+  user.save(function(err) {
     if (err) {
       next(err);
     } else {
