@@ -80,6 +80,10 @@ router.post('/signup', function(req, res, next) {
   var pass = req.body.pass;
   var rePass = req.body.rePass;
 
+  if (name == '' || pass == '') {
+    return errorHandle(new Error("帐号和密码不能为空！"), next);
+  }
+
   if (pass !== rePass) {
     return errorHandle(new Error('两次密码不对'), next);
   }
