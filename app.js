@@ -7,6 +7,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var expressLayouts = require('express-ejs-layouts');
 // var useragent = require('express-useragent');
+var config = require('./config');
+var auth = require('./middlewares/auth');
 
 var api = require('./routes/route.api');
 var page = require('./routes/route.page');
@@ -23,8 +25,9 @@ app.use(expressLayouts);
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser(config.cookieName)); //修改
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(auth.authUser);
 
 // app.use(useragent.express());
 // app.use(function (req, res, next) {
