@@ -9,6 +9,16 @@ var expressLayouts = require('express-ejs-layouts');
 // var useragent = require('express-useragent');
 var config = require('./config');
 var auth = require('./middlewares/auth');
+const R = require('ramda');
+var request = require('request');
+var axios = require('axios');
+
+const util = require('util');
+const fs = require('fs');
+var outputPathString = './write_jsonfile.txt';
+var dirPathString = './';
+
+const readdir = util.promisify(fs.readdir);
 
 var api = require('./routes/route.api');
 var page = require('./routes/route.page');
@@ -34,6 +44,68 @@ app.use(auth.authUser);
 //   console.log(req.useragent);
 //   next();
 // });
+// var addTen = R.add(10);
+// console.log(addTen(5));
+// console.log(R.add(2,3), R.add(7)(10));
+
+// function readTopics() {
+//   request(
+//     'https://cnodejs.org/api/v1/topics?page=1&tag=good&limit=1&mdrender=false',
+//     function (err, response, body) {
+//       if (err) {
+//         return;
+//       }
+
+//       var list = JSON.parse(body).data;
+//       readUserInfo(list[0].author.loginname);
+//     }
+//   );
+// }
+
+// function readUserInfo(name) {
+//   request('https://cnodejs.org/api/v1/user/' + name, function (err, response, body) {
+//     var info = JSON.parse(body).data;
+//     console.log(info);
+//   });
+// }
+
+// readTopics();
+
+// var readData = function(response) {
+//   return response.data;
+// };
+
+// function readTopics() {
+//   return axios
+//     .get(
+//       'https://cnodejs.org/api/v1/topics?page=1&tag=good&limit=1&mdrender=false'
+//     )
+//     .then(readData)
+//     .then(result => result.data[0].author.loginname);
+// }
+
+// function readUserInfo(name) {
+//   return axios.get('https://cnodejs.org/api/v1/user/' + name)
+//   .then(readData)
+//   .then(result => result.data)
+// }
+
+// readTopics()
+//   .then(readUserInfo)
+//   .then(console.log)
+//   .catch(console.log);
+
+function writeFile(path) {
+  return function (content) {
+    return util.promisify(fs.writeFile)(path, content);
+  }
+}
+
+readdir(dirPathString)
+  .then(R.filter(R.test(/.json/)))
+  .then(R.filter(R.compose(R.not, R.isNil)))
+  .then(writeFile(outputPathString))
+  .catch(console.log);
 
 app.use('/', page);
 app.use('/api/v1', api);
