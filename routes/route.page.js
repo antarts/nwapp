@@ -3,6 +3,7 @@ var router = express.Router();
 var config = require('../config');
 var PostModel = require('../models/post');
 var marked = require('marked');
+var auth = require('../middlewares/auth');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -14,8 +15,8 @@ router.get('/posts', function (req, res, next) {
   res.render('posts', { title: 'post page.' });
 });
 
-/* GET posts edit page. */
-router.get('/posts/create', function (req, res, next) {
+/* GET posts create page. */
+router.get('/posts/create', auth.adminRequired, function(req, res, next) {
   res.render('create');
 });
 
@@ -24,13 +25,13 @@ router.get('/posts/show', function (req, res, next) {
   var id = req.query.id;
 
   PostModel.findOne({ _id: id }, function (err, post) {
-    post.content = marked(post.content);
+    post.mkcontent = marked(post.content);
     res.render('show', { post });
   });
 });
 
 /* GET posts edit page. */
-router.get('/posts/edit', function (req, res, next) {
+router.get('/posts/edit', auth.adminRequired, function (req, res, next) {
   var id = req.query.id;
 
   res.render('edit', { id });

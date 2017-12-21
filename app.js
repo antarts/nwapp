@@ -7,21 +7,24 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var expressLayouts = require('express-ejs-layouts');
 // var useragent = require('express-useragent');
+var connectMongodb = require('connect-mongo');
+var session = require('express-session');
 var config = require('./config');
 var auth = require('./middlewares/auth');
-const R = require('ramda');
-var request = require('request');
-var axios = require('axios');
+// const R = require('ramda');
+// var request = require('request');
+// var axios = require('axios');
 
-const util = require('util');
-const fs = require('fs');
-var outputPathString = './write_jsonfile.txt';
-var dirPathString = './';
+// const util = require('util');
+// const fs = require('fs');
+// var outputPathString = './write_jsonfile.txt';
+// var dirPathString = './';
 
-const readdir = util.promisify(fs.readdir);
+// const readdir = util.promisify(fs.readdir);
 
 var api = require('./routes/route.api');
 var page = require('./routes/route.page');
+var MongoStore = new connectMongodb(session);
 
 var app = express();
 
@@ -37,6 +40,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser(config.cookieName)); //修改
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(
+  session({
+    secret: config.sessionSecret,
+    store: new MongoStore({
+      url: config.mongodbUrl
+    }),
+    resave: true,
+    saveUninitialized: true
+  })
+);
+
 app.use(auth.authUser);
 
 // app.use(useragent.express());
@@ -95,17 +109,17 @@ app.use(auth.authUser);
 //   .then(console.log)
 //   .catch(console.log);
 
-function writeFile(path) {
-  return function (content) {
-    return util.promisify(fs.writeFile)(path, content);
-  }
-}
+// function writeFile(path) {
+//   return function (content) {
+//     return util.promisify(fs.writeFile)(path, content);
+//   }
+// }
 
-readdir(dirPathString)
-  .then(R.filter(R.test(/.json/)))
-  .then(R.filter(R.compose(R.not, R.isNil)))
-  .then(writeFile(outputPathString))
-  .catch(console.log);
+// readdir(dirPathString)
+//   .then(R.filter(R.test(/.json/)))
+//   .then(R.filter(R.compose(R.not, R.isNil)))
+//   .then(writeFile(outputPathString))
+//   .catch(console.log);
 
 app.use('/', page);
 app.use('/api/v1', api);
