@@ -1,10 +1,12 @@
-var express = require('express');
-var router = express.Router();
-var PostModel = require('../models/post');
-var errorHandle = require('../common/errorHandle');
-var bcrypt = require('bcrypt');
-var UserModel = require('../models/user');
-var config = require('../config');
+import express from 'express';
+import PostModel from '../models/post';
+import errorHandle from '../common/errorHandle';
+import bcrypt from 'bcrypt';
+import UserModel from '../models/user';
+import config from '../config';
+import * as auth from '../middlewares/auth';
+
+const router = express.Router();
 
 /* GET users listing. */
 router.get('/users', function (req, res, next) {
@@ -25,14 +27,13 @@ router.get('/posts', function (req, res, next) {
 
 /* POST create post */
 router.post('/posts', function (req, res, next) {
-  var title = req.body.title;
-  var content = req.body.content;
+  const { title, content } = req.body;
 
   if (title == '' || content == '') {
     return next(new Error("内容不能为空！"));
   }
 
-  var post = new PostModel();
+  const post = new PostModel();
   post.title = title;
   post.content = content;
   post.authorId = res.locals.currentUser._id;
@@ -48,7 +49,7 @@ router.post('/posts', function (req, res, next) {
 
 /* GET one psot */
 router.get('/posts/:id', function (req, res, next) {
-  var id = req.params.id;
+  const id = req.params.id;
 
   PostModel.findOne({ _id: id }, function (err, post) {
     if (err) {
@@ -61,9 +62,7 @@ router.get('/posts/:id', function (req, res, next) {
 
 /* PATCH edit post */
 router.patch('/posts/:id', function (req, res, next) {
-  var id = req.params.id;
-  var title = req.body.title;
-  var content = req.body.content;
+  const { id, title, content } = req.params;
 
   PostModel.findOneAndUpdate({ _id: id }, { title, content }, function (err) {
     if (err) {
@@ -76,9 +75,7 @@ router.patch('/posts/:id', function (req, res, next) {
 
 /* POST signup user */
 router.post('/signup', function(req, res, next) {
-  var name = req.body.name;
-  var pass = req.body.pass;
-  var rePass = req.body.rePass;
+  const { name, pass, rePass } = req.body;
 
   if (name == '' || pass == '') {
     return errorHandle(new Error("帐号和密码不能为空！"), next);
@@ -88,7 +85,7 @@ router.post('/signup', function(req, res, next) {
     return errorHandle(new Error('两次密码不对'), next);
   }
 
-  var user = new UserModel();
+  const user = new UserModel();
   user.name = name;
   user.pass = bcrypt.hashSync(pass, 10);
   user.save(function(err) {
@@ -102,20 +99,19 @@ router.post('/signup', function(req, res, next) {
 
 /* POST signin user */
 router.post('/signin', function(req, res, next) {
-  var name = req.body.name || '';
-  var pass = req.body.pass || '';
+  const { name, pass } = req.body;
 
   UserModel.findOne({ name }, function(err, user) {
     if (err || !user) {
       return next(new Error('用户名或密码错误'));
     } else {
-      var isOk = bcrypt.compareSync(pass, user.pass);
+      const isOk = bcrypt.compareSync(pass, user.pass);
       if (!isOk) {
         return next(new Error('用户名或密码错误'));
       }
 
-      var authToken = user._id;
-      var opts = {
+      const authToken = user._id;
+      const opts = {
         path: '/',
         maxAge: 1000 * 60 * 60 * 24 * 30, // cookie 有效期30天
         signed: true,
@@ -128,4 +124,4 @@ router.post('/signin', function(req, res, next) {
   });
 });
 
-module.exports = router;
+export default router;

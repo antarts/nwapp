@@ -1,19 +1,19 @@
 require('./models/init');
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var expressLayouts = require('express-ejs-layouts');
-// var useragent = require('express-useragent');
-var connectMongodb = require('connect-mongo');
-var session = require('express-session');
-var config = require('./config');
-var auth = require('./middlewares/auth');
+import express from 'express';
+import path from 'path';
+import favicon from 'serve-favicon';
+import logger from 'morgan';
+import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
+import expressLayouts from 'express-ejs-layouts';
+// import useragent from 'express-useragent';
+import connectMongodb from 'connect-mongo';
+import session from 'express-session';
+import config from './config';
+import * as auth from './middlewares/auth';
 // const R = require('ramda');
-// var request = require('request');
-// var axios = require('axios');
+// import request = require('request');
+// import axios = require('axios');
 
 // const util = require('util');
 // const fs = require('fs');
@@ -22,11 +22,12 @@ var auth = require('./middlewares/auth');
 
 // const readdir = util.promisify(fs.readdir);
 
-var api = require('./routes/route.api');
-var page = require('./routes/route.page');
-var MongoStore = new connectMongodb(session);
+import api from './routes/route.api';
+import page from './routes/route.page';
 
-var app = express();
+const MongoStore = new connectMongodb(session);
+
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -154,4 +155,4 @@ app.use(function(err, req, res, next) {
   });
 });
 
-module.exports = app;
+export default app;

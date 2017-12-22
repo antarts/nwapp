@@ -1,9 +1,10 @@
-var express = require('express');
-var router = express.Router();
-var config = require('../config');
-var PostModel = require('../models/post');
-var marked = require('marked');
-var auth = require('../middlewares/auth');
+import express from 'express';
+import config from '../config';
+import PostModel from '../models/post';
+import marked from 'marked';
+import * as auth from '../middlewares/auth';
+
+const router = express.Router();
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -22,7 +23,7 @@ router.get('/posts/create', auth.adminRequired, function(req, res, next) {
 
 /* GET show post page */
 router.get('/posts/show', function (req, res, next) {
-  var id = req.query.id;
+  const { id } = req.query;
 
   PostModel.findOne({ _id: id }, function (err, post) {
     post.mkcontent = marked(post.content);
@@ -32,7 +33,7 @@ router.get('/posts/show', function (req, res, next) {
 
 /* GET posts edit page. */
 router.get('/posts/edit', auth.adminRequired, function (req, res, next) {
-  var id = req.query.id;
+  const { id } = req.query;
 
   res.render('edit', { id });
 });
@@ -53,4 +54,4 @@ router.get('/signout', function (req, res, next) {
   res.redirect('/');
 });
 
-module.exports = router;
+export default router;

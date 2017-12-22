@@ -1,9 +1,9 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+import mongoose from 'mongoose';
+const Schema = mongoose.Schema;
 
-var ObjectId = Schema.ObjectId;
+const ObjectId = Schema.ObjectId;
 
-var PostSchema = new Schema({
+const PostSchema = new Schema({
     title: { type: String, required: true },
     content: { type: String, required: true },
     authorId: ObjectId, // 添加作者 ID.
@@ -11,4 +11,4 @@ var PostSchema = new Schema({
 
 const PostModel = mongoose.model('Post', PostSchema);
 
-module.exports = PostModel;
+export default PostModel;
