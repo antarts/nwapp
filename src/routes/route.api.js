@@ -5,6 +5,8 @@ import bcrypt from 'bcrypt';
 import UserModel from '../models/user';
 import config from '../config';
 import * as auth from '../middlewares/auth';
+import jwt from 'jwt-simple';
+import moment from 'moment';
 
 const router = express.Router();
 
@@ -110,16 +112,25 @@ router.post('/signin', function(req, res, next) {
         return next(new Error('用户名或密码错误'));
       }
 
-      const authToken = user._id;
+      const token = jwt.encode(
+        {
+          _id: user._id,
+          name: user.name,
+          isAdmin: user.loginname === config.admin,
+          exp: moment().add('days', 30).valueOf(),
+        },
+        config.jwtSecret
+      );
+
       const opts = {
         path: '/',
-        maxAge: 1000 * 60 * 60 * 24 * 30, // cookie 有效期30天
+        maxAge: moment().add('days', 30).valueOf(), // cookie 有效期30天
         signed: true,
         httpOnly: true
       };
 
-      res.cookie(config.cookieName, authToken, opts);
-      res.end();
+      res.cookie(config.cookieName, token, opts);
+      res.json({ token });
     }
   });
 });
