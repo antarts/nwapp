@@ -14,6 +14,9 @@ router.get('/posts', post.more);
 /* POST create post */
 router.post('/posts', auth.adminRequired, post.create);
 
+/* GET active account */
+router.get('/activeAccount', user.activeAccount);
+
 /* GET one psot */
 router.get('/posts/:id', post.one);
 
