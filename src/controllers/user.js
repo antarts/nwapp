@@ -5,6 +5,8 @@ import config from '../config';
 import jwt from 'jwt-simple';
 import moment from 'moment';
 import errorHandle from '../common/errorHandle';
+import { sendActiveMail } from '../common/mail';
+import utility from 'utility';
 
 export const activeAccount = function (req, res, next) {
     const { key, name } = req.query;

@@ -6,7 +6,7 @@ const transporter = mailer.createTransport(smtpTransport(config.email));
 const SITE_ROOT_URL = `${config.url}`;
 
 function sendMail(data) {
-  config from = '<' + config.email.auth.user + '>';
+  const from = '<' + config.email.auth.user + '>';
   data.from = from;
   transporter.sendMail(data, err => {
     if (err) {
